@@ -11,8 +11,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: pull Docker images
-        run: docker pull aydev123/angular-app:latest
+        run: sudo docker pull aydev123/angular-app:latest
       - name: Delete the old docker container
-        run: docker rm -f my-angular-app || true
+        run: sudo docker rm -f my-angular-app || true
       - name: Run Docker Container
-        run: docker run -d -p 7000:80 --name my-angular-app aydev123/angular-app
+        run: sudo docker run -d -p 7000:80 --name my-angular-app aydev123/angular-app
