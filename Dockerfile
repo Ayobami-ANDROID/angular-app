@@ -1,23 +1,23 @@
-# Use an official Node.js runtime as a parent image
-FROM node:latest
+# Stage 1
 
-# Set the working directory within the container
+FROM node:10-alpine as build-step
+
+RUN mkdir -p /app
+
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files into the container
-COPY package*.json ./
+COPY package*.json /app
 
-# Install the Angular CLI and project dependencies
-RUN npm install -g @angular/cli && npm install
+RUN npm install
 
-# Copy the rest of the application code into the container
-COPY . .
+COPY . /app
 
-# Build the Angular application for production
-RUN ng build --prod
+RUN npm  build
 
-# Expose port 80 to allow external access to the application
-EXPOSE 4200
+# Stage 2
 
-# Start the Angular application when the container is run
-CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
+FROM nginx:latest
+
+COPY --from=build-step /app/dist/my-angular-app /usr/share/nginx/html
+
+EXPOSE 80
